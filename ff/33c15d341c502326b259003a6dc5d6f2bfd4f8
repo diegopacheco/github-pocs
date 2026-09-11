@@ -1,0 +1,25 @@
+stacked-prs/README.md
+  h_8e2c3875396153 1-2,7-10
+  s_945ea0a4ecd2fa::t_c6fc84951e0930 3-6,11-221
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ff33c15d341c502326b259003a6dc5d6f2bfd4f8",
+  "prompts": {},
+  "humans": {
+    "h_8e2c3875396153": {
+      "author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_945ea0a4ecd2fa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f9c62858-34d5-43bc-a22a-e379226d5167",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
