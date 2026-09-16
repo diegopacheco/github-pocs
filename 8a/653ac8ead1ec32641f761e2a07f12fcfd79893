@@ -1,0 +1,75 @@
+tag-actions-render/scripts/test-all.sh
+  s_30b5229c0a3e52::t_f10b8bd77855ac 1-12
+tag-actions-render/scripts/ui.sh
+  s_30b5229c0a3e52::t_f10b8bd77855ac 1-10
+tag-actions-render/README.md
+  s_30b5229c0a3e52::t_0bcd77602cc9f9 1-140
+tag-actions-render/src/viewer.html
+  s_30b5229c0a3e52::t_594b7361f8abee 212,281,287
+  s_30b5229c0a3e52::t_41219a9f869f94 196,238,289
+  s_30b5229c0a3e52::t_8ac933172add18 1-195,197-211,213-237,239-267,269,271-272,274-276,284-286,288,290-299
+  s_30b5229c0a3e52::t_012b54a4a1b8c9 268,270,273,277-280,282-283
+tag-actions-render/src/seal.js
+  s_30b5229c0a3e52::t_8fc99cad61054b 1-45
+tag-actions-render/tests/pages.test.js
+  s_30b5229c0a3e52::t_e8264175339d7a 1-75
+tag-actions-render/.gitignore
+  s_30b5229c0a3e52::t_f10b8bd77855ac 1
+.github/workflows/temp-render.yml
+  s_30b5229c0a3e52::t_123276e4799d34 43
+  s_30b5229c0a3e52::t_c7801c20d79d29 1-42,44-110
+tag-actions-render/scripts/status.sh
+  s_30b5229c0a3e52::t_f10b8bd77855ac 1-14
+tag-actions-render/scripts/stop-all.sh
+  s_30b5229c0a3e52::t_f10b8bd77855ac 1-16
+tag-actions-render/tests/build.test.js
+  s_30b5229c0a3e52::t_9acc9f88adb5fd 87,89
+  s_30b5229c0a3e52::t_594b7361f8abee 84-86,88,90-92
+  s_30b5229c0a3e52::t_7cf7231b0ea89c 1-83
+tag-actions-render/scripts/ports.env
+  s_30b5229c0a3e52::t_f10b8bd77855ac 1
+tag-actions-render/scripts/start-all.sh
+  s_30b5229c0a3e52::t_f10b8bd77855ac 1-30
+tag-actions-render/src/build.js
+  s_30b5229c0a3e52::t_76c09b661d3e26 1-117
+tag-actions-render/tests/seal.test.js
+  s_30b5229c0a3e52::t_6f295bc34cbade 1-30
+tag-actions-render/scripts/common.sh
+  s_30b5229c0a3e52::t_f10b8bd77855ac 1-113
+tag-actions-render/scripts/setup.sh
+  s_30b5229c0a3e52::t_f10b8bd77855ac 1-15
+README.md
+  s_30b5229c0a3e52::t_0e1d3b11576811 7,14
+tag-actions-render/samples/pages/status.html
+  s_30b5229c0a3e52::t_29637f70d41d09 1-35
+tag-actions-render/samples/guide.md
+  s_30b5229c0a3e52::t_29637f70d41d09 1-34
+tag-actions-render/ci/pages.sh
+  s_30b5229c0a3e52::t_61bc96e448d873 19,22,44-45,48-53
+  s_30b5229c0a3e52::t_10605fab6dbabd 1-18,20-21,23-43,46-47,54-92
+tag-actions-render/ci/comment.sh
+  s_30b5229c0a3e52::t_126d29dbaadae1 1-21
+tag-actions-render/samples/assets/pipeline.svg
+  s_30b5229c0a3e52::t_29637f70d41d09 1-17
+.github/workflows/temp-render-cleanup.yml
+  s_30b5229c0a3e52::t_726c6b179586e7 1-24
+tag-actions-render/tests/markdown.test.js
+  s_30b5229c0a3e52::t_539f9a4859e26c 1-44,48-65
+  s_30b5229c0a3e52::t_7739988adb4339 45-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8a653ac8ead1ec32641f761e2a07f12fcfd79893",
+  "prompts": {},
+  "sessions": {
+    "s_30b5229c0a3e52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1022e210-0865-41bd-8dea-5c6514caf13a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
