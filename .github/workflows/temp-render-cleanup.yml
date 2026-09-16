@@ -1,0 +1,24 @@
+name: temp-render-cleanup
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: temp-render-pages
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Remove previews older than 24h
+        run: bash tag-actions-render/ci/pages.sh prune

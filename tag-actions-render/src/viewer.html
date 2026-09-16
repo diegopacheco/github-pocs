@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Temp Render</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --panel: #ffffff;
+    --ink: #1c2330;
+    --muted: #6a7385;
+    --line: #e2e6ec;
+    --accent: #2f6fde;
+    --accent-soft: #e8f0fd;
+    --danger: #c23b32;
+    --md: #7a4fd6;
+    --html: #d1662a;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; }
+  [hidden] { display: none !important; }
+  button, input { font: inherit; }
+
+  .gate { min-height: 100%; display: grid; place-items: center; padding: 16px; }
+  .card { width: min(380px, 100%); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 28px; box-shadow: 0 12px 40px rgba(28, 35, 48, .08); }
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .logo { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  .brand h1 { font-size: 18px; margin: 0; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin: 14px 0 6px; }
+  .card input { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfd; color: var(--ink); }
+  .card input:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+  .primary { width: 100%; margin-top: 20px; padding: 10px; border: 0; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 600; cursor: pointer; }
+  .primary:disabled { opacity: .6; cursor: wait; }
+  .error { color: var(--danger); min-height: 18px; margin: 12px 0 0; font-size: 13px; }
+  .expiry { color: var(--muted); font-size: 12px; margin: 16px 0 0; text-align: center; }
+
+  .app { height: 100%; display: grid; grid-template-rows: 52px 1fr; }
+  .topbar { display: flex; align-items: center; gap: 12px; padding: 0 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  .topbar .title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .spacer { flex: 1; }
+  .pill { font-size: 12px; color: var(--muted); background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+  .ghost { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 6px 12px; cursor: pointer; color: var(--ink); }
+  .ghost:hover { background: var(--bg); }
+  .body { display: grid; grid-template-columns: 300px 1fr; min-height: 0; }
+  .side { border-right: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; min-height: 0; }
+  .filter { margin: 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+  .files { list-style: none; margin: 0; padding: 0 8px 12px; overflow: auto; }
+  .group { font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--muted); padding: 12px 8px 4px; word-break: break-all; }
+  .file { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: 0; background: none; padding: 7px 8px; border-radius: 6px; cursor: pointer; color: var(--ink); }
+  .file:hover { background: var(--bg); }
+  .file.active { background: var(--accent-soft); color: var(--accent); }
+  .file .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .badge { flex: none; font-size: 10px; font-weight: 700; border-radius: 4px; padding: 2px 5px; color: #fff; }
+  .badge.md { background: var(--md); }
+  .badge.html { background: var(--html); }
+  .main { display: grid; grid-template-rows: 40px 1fr; min-height: 0; }
+  .crumb { display: flex; align-items: center; padding: 0 16px; font-family: var(--mono); font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); background: var(--panel); overflow: hidden; white-space: nowrap; }
+  iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+  .empty { display: grid; place-items: center; color: var(--muted); }
+
+  @media (max-width: 760px) {
+    .body { grid-template-columns: 1fr; grid-template-rows: 200px 1fr; }
+    .side { border-right: 0; border-bottom: 1px solid var(--line); }
+    .pill { display: none; }
+  }
+</style>
+</head>
+<body>
+<section class="gate" id="gate">
+  <form class="card" id="login" autocomplete="off">
+    <div class="brand"><div class="logo">TR</div><h1>Temp Render</h1></div>
+    <p class="sub" id="gate-title"></p>
+    <div id="login-fields">
+      <label for="user">User</label>
+      <input id="user" name="user" required autocapitalize="off" spellcheck="false">
+      <label for="pass">Password</label>
+      <input id="pass" name="pass" type="password" required>
+      <button class="primary" id="unlock" type="submit">Unlock</button>
+    </div>
+    <p class="error" id="error" role="alert"></p>
+    <p class="expiry" id="gate-expiry"></p>
+  </form>
+</section>
+
+<section class="app" id="app" hidden>
+  <header class="topbar">
+    <div class="logo">TR</div>
+    <div class="title" id="app-title"></div>
+    <div class="spacer"></div>
+    <span class="pill" id="app-expiry"></span>
+    <button class="ghost" id="lock" type="button">Lock</button>
+  </header>
+  <div class="body">
+    <aside class="side">
+      <input class="filter" id="filter" placeholder="Filter files" spellcheck="false">
+      <ul class="files" id="files"></ul>
+    </aside>
+    <main class="main">
+      <div class="crumb" id="crumb"></div>
+      <div class="empty" id="empty">Select a file</div>
+      <iframe id="frame" title="Rendered file" hidden></iframe>
+    </main>
+  </div>
+</section>
+
+<template id="markdown-style">
+<style>
+  body { margin: 0; padding: 32px; font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1f2328; background: #fff; }
+  article { max-width: 900px; margin: 0 auto; }
+  h1, h2 { border-bottom: 1px solid #d8dee4; padding-bottom: .3em; }
+  h1, h2, h3, h4, h5, h6 { margin: 1.4em 0 .6em; line-height: 1.25; }
+  a { color: #0969da; }
+  img { max-width: 100%; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 85%; background: #eff1f3; padding: .2em .4em; border-radius: 6px; }
+  pre { background: #f6f8fa; padding: 16px; border-radius: 8px; overflow: auto; }
+  pre code { background: none; padding: 0; font-size: 13px; }
+  blockquote { margin: 0; padding: 0 1em; color: #59636e; border-left: 4px solid #d1d9e0; }
+  table { border-collapse: collapse; display: block; overflow: auto; margin: 1em 0; }
+  th, td { border: 1px solid #d1d9e0; padding: 6px 13px; }
+  tr:nth-child(2n) { background: #f6f8fa; }
+  hr { border: 0; border-top: 1px solid #d1d9e0; margin: 24px 0; }
+  li.task { list-style: none; }
+  @media (max-width: 600px) { body { padding: 16px; } }
+</style>
+</template>
+
+<script id="payload" type="application/json">__PAYLOAD__</script>
+<script>
+__SEAL_JS__
+</script>
+<script>
+__MARKDOWN_JS__
+</script>
+<script>
+  const payload = JSON.parse(document.getElementById("payload").textContent);
+  const $ = (id) => document.getElementById(id);
+  let files = [];
+  let assets = {};
+  let current = null;
+
+  function formatRemaining(ms) {
+    if (ms <= 0) return "expired";
+    const hours = Math.floor(ms / 3600000);
+    const minutes = Math.floor((ms % 3600000) / 60000);
+    return "expires in " + hours + "h " + minutes + "m";
+  }
+
+  function isExpired() {
+    return Date.now() >= payload.expiresAt;
+  }
+
+  function normalizePath(base, ref) {
+    const parts = base.split("/").slice(0, -1).concat(ref.split("/"));
+    const out = [];
+    for (const part of parts) {
+      if (part === "" || part === ".") continue;
+      if (part === "..") out.pop();
+      else out.push(part);
+    }
+    return out.join("/");
+  }
+
+  function isRelative(ref) {
+    return !/^([a-z][a-z0-9+.-]*:|\/\/|#|\/)/i.test(ref);
+  }
+
+  function resolveRefs(html, path) {
+    const base = location.href.split("#")[0];
+    return html
+      .replace(/(<img\b[^>]*?\bsrc=["'])([^"']+)(["'])/gi, (m, pre, src, post) => {
+        const key = isRelative(src) ? normalizePath(path, decodeURI(src.split(/[?#]/)[0])) : "";
+        return assets[key] ? pre + assets[key] + post : m;
+      })
+      .replace(/(<a\b[^>]*?\bhref=["'])([^"']+)(["'])/gi, (m, pre, href, post) => {
+        if (!isRelative(href)) return /^#/.test(href) ? m : pre + href + '" target="_blank" rel="noopener' + post;
+        const key = normalizePath(path, decodeURI(href.split(/[?#]/)[0]));
+        return files.some((f) => f.path === key) ? pre + base + "#file=" + encodeURIComponent(key) + '" target="_top' + post : m;
+      });
+  }
+
+  function renderFile(file) {
+    if (file.type === "md") {
+      const style = $("markdown-style").innerHTML;
+      return "<!DOCTYPE html><html><head><meta charset='utf-8'>" + style + "</head><body><article>" + resolveRefs(renderMarkdown(file.content), file.path) + "</article></body></html>";
+    }
+    return resolveRefs(file.content, file.path);
+  }
+
+  function showFile(path) {
+    const file = files.find((f) => f.path === path);
+    if (!file) return;
+    current = file;
+    const frame = $("frame");
+    frame.setAttribute("sandbox", file.type === "md"
+      ? "allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
+      : "allow-scripts allow-popups allow-forms allow-modals");
+    frame.srcdoc = renderFile(file);
+    frame.hidden = false;
+    $("empty").hidden = true;
+    $("crumb").textContent = file.path;
+    document.querySelectorAll(".file").forEach((el) => el.classList.toggle("active", el.dataset.path === path));
+    if (decodeURIComponent(location.hash.slice(6)) !== path) history.replaceState(null, "", "#file=" + encodeURIComponent(path));
+  }
+
+  function renderFileList() {
+    const query = $("filter").value.trim().toLowerCase();
+    const list = $("files");
+    list.innerHTML = "";
+    let group = null;
+    files.filter((f) => f.path.toLowerCase().includes(query)).forEach((file) => {
+      const dir = file.path.includes("/") ? file.path.slice(0, file.path.lastIndexOf("/")) : "/";
+      if (dir !== group) {
+        group = dir;
+        const header = document.createElement("li");
+        header.className = "group";
+        header.textContent = dir;
+        list.appendChild(header);
+      }
+      const item = document.createElement("li");
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "file" + (current && current.path === file.path ? " active" : "");
+      button.dataset.path = file.path;
+      const badge = document.createElement("span");
+      badge.className = "badge " + file.type;
+      badge.textContent = file.type.toUpperCase();
+      const name = document.createElement("span");
+      name.className = "name";
+      name.textContent = file.path.split("/").pop();
+      button.append(badge, name);
+      button.addEventListener("click", () => showFile(file.path));
+      item.appendChild(button);
+      list.appendChild(item);
+    });
+  }
+
+  function tick() {
+    const text = formatRemaining(payload.expiresAt - Date.now());
+    $("gate-expiry").textContent = "Preview " + text;
+    $("app-expiry").textContent = text;
+    if (isExpired()) lock(true);
+  }
+
+  function lock(expired) {
+    files = [];
+    assets = {};
+    current = null;
+    $("frame").srcdoc = "";
+    $("app").hidden = true;
+    $("gate").hidden = false;
+    $("pass").value = "";
+    $("login-fields").hidden = expired === true;
+    $("error").textContent = expired === true ? "This preview has expired." : "";
+  }
+
+  $("login").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (isExpired()) return lock(true);
+    $("unlock").disabled = true;
+    $("error").textContent = "";
+    let data;
+    try {
+      data = await unseal(payload.sealed, $("user").value.trim(), $("pass").value);
+    } catch (e) {
+      $("error").textContent = "Wrong user or password.";
+      return;
+    } finally {
+      $("unlock").disabled = false;
+    }
+    files = data.files;
+    assets = data.assets;
+    $("gate").hidden = true;
+    $("app").hidden = false;
+    renderFileList();
+    const wanted = decodeURIComponent(location.hash.replace(/^#file=/, ""));
+    showFile(files.some((f) => f.path === wanted) ? wanted : files[0].path);
+  });
+
+  $("lock").addEventListener("click", () => lock(false));
+  $("filter").addEventListener("input", renderFileList);
+  window.addEventListener("hashchange", () => {
+    if (files.length) showFile(decodeURIComponent(location.hash.replace(/^#file=/, "")));
+  });
+
+  $("gate-title").textContent = payload.title;
+  $("app-title").textContent = payload.title;
+  document.title = payload.title + " - Temp Render";
+  tick();
+  setInterval(tick, 30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="120" viewBox="0 0 640 120" font-family="Helvetica, Arial, sans-serif" font-size="15">
+  <rect width="640" height="120" fill="#ffffff"/>
+  <g stroke="#2f6fde" stroke-width="2" fill="#e8f0fd">
+    <rect x="20" y="35" width="150" height="50" rx="10"/>
+    <rect x="245" y="35" width="150" height="50" rx="10"/>
+    <rect x="470" y="35" width="150" height="50" rx="10"/>
+  </g>
+  <g stroke="#6a7385" stroke-width="2" fill="none">
+    <path d="M170 60 H240"/><path d="M232 54 L240 60 L232 66"/>
+    <path d="M395 60 H465"/><path d="M457 54 L465 60 L457 66"/>
+  </g>
+  <g fill="#1c2330" text-anchor="middle">
+    <text x="95" y="65">build</text>
+    <text x="320" y="65">staging</text>
+    <text x="545" y="65">production</text>
+  </g>
+</svg>
