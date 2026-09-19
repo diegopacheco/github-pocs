@@ -91,12 +91,42 @@ Preview URL: `https://<owner>.github.io/<repo>/previews/pr-<number>/`
 * **Copies** - anyone who unlocked the page or fetched `gh-pages` before prune can keep a copy.
 * **Owner only** - `github.repository_owner` is a user for personal repos. For an organization repo change the check to a user login.
 
-## GitHub Setup (not done yet)
+## GitHub Setup (done once)
 
 1. Create the `temp-render` label.
 2. Push this code so the workflows exist on the default branch, `workflow_dispatch` only works from there.
 3. Settings, Actions, General: allow workflows read and write permissions.
-4. Run `./scripts/render-pr.sh <pr>` once, then enable GitHub Pages from the `gh-pages` branch, root folder.
+4. Run `./scripts/render-pr.sh <pr>` once to create the `gh-pages` branch.
+5. Settings, Pages: source "Deploy from a branch", branch `gh-pages`, folder `/ (root)`. The first build takes about a minute, the page returns 404 until then.
+
+## Preview a Pull Request
+
+1. Check `gh` is logged in with the `repo` and `workflow` scopes: `gh auth status`. If not: `gh auth refresh -s repo,workflow`.
+2. Run the script with the PR number:
+
+```bash
+./scripts/render-pr.sh 5
+```
+
+3. Wait for it to finish. It prints:
+
+```
+page:     https://<owner>.github.io/<repo>/previews/pr-5/
+user:     pr-5
+password: <24 random characters>
+secret RENDER_PASS deleted
+```
+
+4. Save the password now. It is not stored anywhere, not in GitHub, not in the PR comment, not in the logs.
+5. Open the page, type the user and password, and browse the changed files.
+6. After new pushes to the PR, run the script again. You get a new page and a new password, the old one stops working.
+7. If you lose the password, run the script again.
+
+The page is removed:
+
+* 24h after the run: the page refuses to unlock at exactly 24h, and the hourly cleanup (minute 17 of every hour) deletes the files, so they are gone within about 1h 10m after that.
+* Right away: close the PR or remove the `temp-render` label.
+* Adding the label by hand does nothing. Only `render-pr.sh` publishes.
 
 ## Printscreens
 
