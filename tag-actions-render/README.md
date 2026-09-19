@@ -1,6 +1,6 @@
 # Temp Render
 
-Tag a pull request with `temp-render` and a GitHub Action publishes a temporary page that renders every `.md` and `.html` file changed in that PR. The page is protected by a user and password, the credentials are commented on the PR, and the page is deleted after 24 hours.
+Tag a pull request with `temp-render` and a GitHub Action publishes a temporary page that renders every `.md` and `.html` file changed in that PR. The page is protected by a user and a password kept in a repository secret, the link is commented on the PR, and the page is deleted after 24 hours.
 
 <img src="diagrams/temp-render.png" width="900"/>
 
@@ -11,8 +11,8 @@ Tag a pull request with `temp-render` and a GitHub Action publishes a temporary 
 3. `git diff` between the PR base and head lists the changed `.md`, `.markdown`, `.html` and `.htm` files.
 4. `src/build.js` packs those files, plus the images they reference, into one self-contained `index.html` and encrypts the content with AES-GCM using a key derived from `user:password` (PBKDF2, 310k iterations).
 5. `ci/pages.sh` writes the page to `previews/pr-N/` on the `gh-pages` branch as a single orphan commit, so removed previews do not stay in git history.
-6. The bot comments the URL, user, password and expiry on the PR. Every new push replaces the page, the password and the comment.
-7. The reviewer opens the URL, types the user and password, and the browser decrypts and renders the files.
+6. The bot comments the URL, user and expiry on the PR, never the password. Every new push replaces the page and the comment.
+7. The owner opens the URL, types the user and the `RENDER_PASS` password, and the browser decrypts and renders the files.
 8. An hourly cron removes previews older than 24h. Closing the PR or removing the label removes the preview right away.
 
 ## Architecture
@@ -82,7 +82,8 @@ Preview URL: `https://<owner>.github.io/<repo>/previews/pr-<number>/`
 
 ## Security Notes
 
-* **Public repo means public comment** - in a public repo anyone can read the PR comment, so the password protects against crawlers and people with only the URL, not against people reading the PR. Use a private repo to keep the password private.
+* **Password lives in a secret** - PR comments, workflow logs, job summaries and artifacts are public in a public repo, so the password is never written to any of them. It comes from the `RENDER_PASS` repository secret, which GitHub masks in logs and never passes to fork PRs.
+* **One password for all previews** - rotate it with `gh secret set RENDER_PASS`. Old previews die within 24h anyway.
 * **Expiry window** - the hourly cron plus the GitHub Pages cache means files can be served for up to about 1h 10m after 24h. The page itself refuses to unlock at exactly 24h.
 * **Copies** - anyone who unlocked the page or fetched `gh-pages` before prune can keep a copy.
 * **Owner only** - `github.repository_owner` is a user for personal repos. For an organization repo change the check to a user login.
@@ -90,9 +91,10 @@ Preview URL: `https://<owner>.github.io/<repo>/previews/pr-<number>/`
 ## GitHub Setup (not done yet)
 
 1. Create the `temp-render` label.
-2. Push this code so the workflows exist on the default branch.
-3. After the first publish creates `gh-pages`, enable GitHub Pages from the `gh-pages` branch, root folder.
-4. Settings, Actions, General: allow workflows read and write permissions.
+2. Create the password secret and keep a copy in a password manager: `openssl rand -base64 32 | tr -dc 'A-Za-z0-9' | cut -c1-32 | tee /dev/tty | gh secret set RENDER_PASS`.
+3. Push this code so the workflows exist on the default branch.
+4. After the first publish creates `gh-pages`, enable GitHub Pages from the `gh-pages` branch, root folder.
+5. Settings, Actions, General: allow workflows read and write permissions.
 
 ## Printscreens
 

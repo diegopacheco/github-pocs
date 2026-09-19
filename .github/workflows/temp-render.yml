@@ -54,12 +54,12 @@ jobs:
 
       - name: Build encrypted page
         if: env.FILE_COUNT != '0'
+        env:
+          RENDER_PASS: ${{ secrets.RENDER_PASS }}
         run: |
-          pass="$(openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | cut -c1-24)"
-          echo "::add-mask::$pass"
-          echo "RENDER_PASS=$pass" >> "$GITHUB_ENV"
+          [ -n "$RENDER_PASS" ] || { echo "RENDER_PASS secret is not set" >&2; exit 1; }
           node "$TOOL/src/build.js" --root . --out "$RUNNER_TEMP/site" \
-            --user "$PREVIEW" --pass "$pass" --hours "$HOURS" \
+            --user "$PREVIEW" --pass "$RENDER_PASS" --hours "$HOURS" \
             --title "PR #$PR_NUMBER" --files-from "$RUNNER_TEMP/files"
 
       - name: Publish to gh-pages
@@ -81,11 +81,11 @@ jobs:
               echo "|---|---|"
               echo "| Page | $url |"
               echo "| User | \`$PREVIEW\` |"
-              echo "| Password | \`$RENDER_PASS\` |"
+              echo "| Password | the RENDER_PASS repository secret |"
               echo "| Files | $FILE_COUNT |"
               echo "| Expires | $expires |"
               echo ""
-              echo "Every push to this pull request publishes a new page with a new password."
+              echo "Every push to this pull request publishes a new page."
             } > "$RUNNER_TEMP/body"
           fi
           bash "$TOOL/ci/comment.sh" "$RUNNER_TEMP/body"
