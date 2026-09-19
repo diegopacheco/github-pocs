@@ -1,8 +1,19 @@
 name: temp-render
+run-name: temp-render pr-${{ inputs.pr || github.event.pull_request.number }} ${{ inputs.nonce || github.event.action }}
 
 on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number
+        required: true
+        type: number
+      nonce:
+        description: Run id picked by scripts/render-pr.sh
+        required: true
+        type: string
   pull_request:
-    types: [labeled, unlabeled, synchronize, reopened, closed]
+    types: [unlabeled, closed]
 
 concurrency:
   group: temp-render-pages
@@ -16,23 +27,32 @@ env:
   LABEL: temp-render
   HOURS: "24"
   TOOL: tag-actions-render
-  PREVIEW: pr-${{ github.event.pull_request.number }}
-  PR_NUMBER: ${{ github.event.pull_request.number }}
+  PREVIEW: pr-${{ inputs.pr || github.event.pull_request.number }}
+  PR_NUMBER: ${{ inputs.pr || github.event.pull_request.number }}
   GH_TOKEN: ${{ github.token }}
 
 jobs:
   publish:
     if: >-
-      github.event.action != 'closed' &&
-      github.event.action != 'unlabeled' &&
-      contains(github.event.pull_request.labels.*.name, 'temp-render') &&
-      github.event.sender.login == github.repository_owner &&
-      github.event.pull_request.head.repo.full_name == github.repository
+      github.event_name == 'workflow_dispatch' &&
+      github.actor == github.repository_owner &&
+      github.triggering_actor == github.repository_owner
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve pull request
+        run: |
+          [[ "$PR_NUMBER" =~ ^[0-9]+$ ]] || { echo "invalid pull request number: $PR_NUMBER" >&2; exit 1; }
+          pr="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" \
+            --jq '[.head.sha, .base.sha, (.head.repo.full_name // "none"), .state] | @tsv')"
+          read -r head base repo state <<< "$pr"
+          [ "$repo" = "$GITHUB_REPOSITORY" ] || { echo "pull request branch is not in this repo: $repo" >&2; exit 1; }
+          [ "$state" = "open" ] || { echo "pull request is $state" >&2; exit 1; }
+          echo "HEAD_SHA=$head" >> "$GITHUB_ENV"
+          echo "BASE_SHA=$base" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ env.HEAD_SHA }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
@@ -43,9 +63,6 @@ jobs:
         run: node --test "$TOOL/tests/*.test.js"
 
       - name: List html and md files of the pull request
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           git diff -z --name-only --diff-filter=d "$BASE_SHA...$HEAD_SHA" -- '*.md' '*.markdown' '*.html' '*.htm' > "$RUNNER_TEMP/files"
           count="$(tr -cd '\0' < "$RUNNER_TEMP/files" | wc -c | tr -d ' ')"
@@ -81,11 +98,11 @@ jobs:
               echo "|---|---|"
               echo "| Page | $url |"
               echo "| User | \`$PREVIEW\` |"
-              echo "| Password | the RENDER_PASS repository secret |"
+              echo "| Password | printed only in the terminal that ran scripts/render-pr.sh |"
               echo "| Files | $FILE_COUNT |"
               echo "| Expires | $expires |"
               echo ""
-              echo "Every push to this pull request publishes a new page."
+              echo "Pushes do not publish, run scripts/render-pr.sh again for a new page and a new password."
             } > "$RUNNER_TEMP/body"
           fi
           bash "$TOOL/ci/comment.sh" "$RUNNER_TEMP/body"
