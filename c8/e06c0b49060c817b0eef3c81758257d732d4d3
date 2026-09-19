@@ -1,0 +1,28 @@
+tag-actions-render/README.md
+  s_16948c44cce979::t_338ade43e3c78d 3,9-10,14-15,28-29,36-37,86-89,97-99,121,132
+.github/workflows/temp-render.yml
+  s_16948c44cce979::t_e64d6a7b5acb3e 45,47
+  s_16948c44cce979::t_274907b5993537 2,5-14,16,30-31,37-39,42-44,46,48-52,55,101,105
+tag-actions-render/scripts/render-pr.sh
+  s_16948c44cce979::t_052bb2ce8fa8e6 1-61
+tag-actions-render/scripts/test-all.sh
+  s_16948c44cce979::t_775f47ffe20b5a 10
+tag-actions-render/tests/render-pr.test.js
+  s_16948c44cce979::t_05651e3fbd3ffe 1-63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c8e06c0b49060c817b0eef3c81758257d732d4d3",
+  "prompts": {},
+  "sessions": {
+    "s_16948c44cce979": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d1a583f-6637-4a14-bb21-a347a683d4aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
