@@ -122,6 +122,8 @@ secret RENDER_PASS deleted
 6. After new pushes to the PR, run the script again. You get a new page and a new password, the old one stops working.
 7. If you lose the password, run the script again.
 
+Sample result: [PR #5](https://github.com/diegopacheco/github-pocs/pull/5) adds one `.md` and one `.html` file, and the bot comment on it shows the page, user and expiry, without the password.
+
 The page is removed:
 
 * 24h after the run: the page refuses to unlock at exactly 24h, and the hourly cleanup (minute 17 of every hour) deletes the files, so they are gone within about 1h 10m after that.
