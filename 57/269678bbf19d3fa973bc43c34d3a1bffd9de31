@@ -1,0 +1,21 @@
+tag-actions-render/samples/pr-test/notes.md
+  s_16948c44cce979::t_130df0e0fec5d8 1-29
+tag-actions-render/samples/pr-test/page.html
+  s_16948c44cce979::t_ae988a42ebe60b 1-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "57269678bbf19d3fa973bc43c34d3a1bffd9de31",
+  "prompts": {},
+  "sessions": {
+    "s_16948c44cce979": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d1a583f-6637-4a14-bb21-a347a683d4aa",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
