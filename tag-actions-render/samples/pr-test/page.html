@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Temp Render Test Page</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f6f8fa; color: #1f2328; padding: 24px; }
+  .card { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 16px; max-width: 480px; }
+  button { padding: 8px 14px; border-radius: 6px; border: 1px solid #1f883d; background: #1f883d; color: #fff; cursor: pointer; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>HTML preview works</h1>
+    <p>CSS and JavaScript from this file run inside the viewer.</p>
+    <button id="count">Clicked 0 times</button>
+  </div>
+  <script>
+    let clicks = 0;
+    document.getElementById("count").addEventListener("click", (e) => {
+      clicks += 1;
+      e.target.textContent = `Clicked ${clicks} times`;
+    });
+  </script>
+</body>
+</html>
